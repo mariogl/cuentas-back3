@@ -1,6 +1,7 @@
 const fs = require("fs");
 const childProcessExec = require("child_process").exec;
 const util = require("util");
+const path = require("path");
 
 const exec = util.promisify(childProcessExec);
 
@@ -14,6 +15,10 @@ const preCommit = async () => {
     .filter((staggedFile) => /.(ts|js)(x?)$/.test(staggedFile));
 
   staggedFilesWithJsOrTs.forEach((staggedFile) => {
+    if (path.basename(staggedFile) === path.basename(__filename)) {
+      return;
+    }
+
     const readFile = fs.readFileSync(staggedFile, "utf8").trim();
 
     if (/console\.clear|dir|log|info|warn|error/.test(readFile)) {

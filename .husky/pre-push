@@ -5,7 +5,7 @@ const util = require("util");
 
 const exec = util.promisify(childProcessExec);
 
-const branchCheck = /^((hotfix|bugfix|feature)\/[a-zA-Z0-9\-]+)$/g;
+const branchCheck = /^(master|(hotfix|bugfix|feature)\/[a-zA-Z0-9\-]+)$/g;
 
 async function checkBranchBeforePush() {
   const branchesNames = await exec("git branch");
