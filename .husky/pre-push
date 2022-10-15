@@ -1,0 +1,27 @@
+#!/usr/bin/env node
+
+const childProcessExec = require("child_process").exec;
+const util = require("util");
+
+const exec = util.promisify(childProcessExec);
+
+const branchCheck = /^((hotfix|bugfix|feature)\/[a-zA-Z0-9\-]+)$/g;
+
+async function checkBranchBeforePush() {
+  const branchesNames = await exec("git branch");
+
+  const cleanBranch = branchesNames.stdout
+    .split("\n")
+    .find((b) => b.trim().charAt(0) === "*")
+    .trim()
+    .substring(2);
+
+  if (!branchCheck.test(cleanBranch)) {
+    console.log("\x1b[31m(ERROR) Please check your branch name.");
+    process.exit(1);
+  }
+  console.log("\x1b[32mBranch pushed succesfully.");
+  process.exit(0);
+}
+
+checkBranchBeforePush();
